@@ -1,0 +1,16 @@
+Contains patches to apply to ROMs for Nintendo Vs. Sky Kid to change
+the start button from 3 for a 2P game to using 2 for a 2P game, meaning
+the game can be played on systems that only have buttons 1 and 2 wired
+up without bodging wires on the board or rewiring the button harness.
+It does this specifically by changing the function that checks for 1P/2P
+start conditions. There is absolutely zero free space in the PRG ROM so
+there was no possibility of writing a bit of extra code to copy the bit
+for 2 pressed from the 2P controls to the 1P controls byte. So, instead
+I opted for a clever patch to the logic that reads the 1P and 2P start
+button presses to preserve the flow while hooking up the 2 button for
+2P start.
+
+For more information, see comments in the patch files. This patch is
+relatively simple but finding and planning it out was time consuming.
+Therefore, there isn't much theory or code to discuss, just the patch
+itself.

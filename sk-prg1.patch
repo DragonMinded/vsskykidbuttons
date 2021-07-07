@@ -1,0 +1,30 @@
+# File size: 32768
+# Change what memory byte we're comparing against for 2P start. The game's
+# code reads the 1P down presses on the current frame into 0x60 and the 2P
+# presses into 0x61. On a NES, the bits we are checking would refer to 1P
+# start and select. On a Red Tent or Vs. DualSystem the same bits correspond
+# to buttons 1 and 3. So it appears the developer was just lazy. So, for
+# the 2P game start check code, change to looking at the 2P inputs.
+7A35: 60 -> 61
+# Coupled with the above, change the bitmask we are comparing against from
+# 0x30 to 0x20. The original code checks in a previous location for coin
+# count < 2, and if so, checks to see if the 1 button is pressed. If so, it
+# starts a 1P game by jumping past the 2P mode set code, subtracting a coin
+# and running the game. If not, it just exits the code. If coin count >= 2,
+# it jumps to displaying the 2P start message "BARON & MAX", then checks to
+# see if either 1 or 3 buttons are pressed. If not, it exits the code. If
+# either are pressed, it then checks if the 2P start button is pressed. If
+# it is, it sets the 2P mode byte in memory, subtracts a coin and then jumps
+# to the same start code that the 1P game start goes to above. So, essentially
+# it is checking for whether either start is pressed, and then specifically
+# for if the 2P start was pressed. We can change this with a clever patch
+# where we change the "is either start pressed" check to "is the button for
+# a 2P start pressed" check and jump all the way back to the original "is 
+# the button for 1P start pressed" check if it is not. So, combined with the
+# above change and this change, that's what we do.
+7A37: 30 -> 20
+# The final bit of the patch changes the existing jump on failure from one
+# that jumps to the function return into one that jumps back to the 1P start
+# check code. The rest of the bytes are no longer needed and they are thus
+# changed to NOPs.
+7A39: C1 29 20 D0 06 -> C8 EA EA EA EA

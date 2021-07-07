@@ -1,0 +1,6 @@
+# File size: 32768
+# Edit the graphic for the circled "3" on the start screen.
+# This appears to be used only for starting a game. Change
+# it to a circled "2" instead.
+7378: 3F 06 0C -> 3E 63 07
+737C: 03 63 3E -> 3C 70 7F
